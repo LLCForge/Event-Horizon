@@ -125,7 +125,7 @@ Chart, `values.config` içeriğinden bir ConfigMap, `/data` için PVC, `/healthz
 
 **Kaynaktan**
 
-Gereksinim: kararlı Rust araç zinciri 1.85+ ([rustup.rs](https://rustup.rs)). Sistem kütüphanesi gerekmez; Linux, macOS ve Windows'ta derlenir.
+Gereksinim: kararlı Rust araç zinciri 1.88+ ([rustup.rs](https://rustup.rs)). Sistem kütüphanesi gerekmez; Linux, macOS ve Windows'ta derlenir.
 
 ## Hızlı başlangıç
 

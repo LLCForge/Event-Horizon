@@ -2,7 +2,7 @@
 name = "event-horizon"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.85"
+rust-version = "1.88"
 description = "Automated guard-railed RTBH and FlowSpec DDoS mitigation over BGP"
 license = "MIT"
 repository = "https://github.com/LLCForge/Event-Horizon"

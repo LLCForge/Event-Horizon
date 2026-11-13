@@ -316,7 +316,7 @@ pub fn decode_open(body: &[u8]) -> Result<Open, DecodeError> {
                         _ => {}
                     }
                 }
-                CAP_GRACEFUL_RESTART if clen >= 2 && (clen - 2) % 4 == 0 => {
+                CAP_GRACEFUL_RESTART if clen >= 2 && (clen - 2).is_multiple_of(4) => {
                     open.graceful_restart = Some(c.u16()? & 0x0FFF);
                 }
                 CAP_GRACEFUL_RESTART => {

@@ -252,7 +252,7 @@ skips existing files named with `--keep`, and is idempotent.
 
 ## Platforms and MSRV
 
-Windows, macOS and Linux (CI on all three). Rust 1.85+ (required by lettre).
+Windows, macOS and Linux (CI on all three). Rust 1.88+ (required by dependencies).
 Cargo features: `cli` (clap subcommands), `smtp` (e-mail sink), `service`
 (Windows service), all enabled by default.
 

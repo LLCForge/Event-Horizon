@@ -125,7 +125,7 @@ The chart ships a ConfigMap from `values.config`, a PVC for `/data`, probes on `
 
 **From source**
 
-Requirements: a stable Rust toolchain 1.85+ ([rustup.rs](https://rustup.rs)). No system libraries are needed; it builds on Linux, macOS and Windows.
+Requirements: a stable Rust toolchain 1.88+ ([rustup.rs](https://rustup.rs)). No system libraries are needed; it builds on Linux, macOS and Windows.
 
 ## Quick start
 

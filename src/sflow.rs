@@ -187,7 +187,7 @@ pub(crate) mod tests {
 
     fn record(format: u32, body: &[u8]) -> Vec<u8> {
         let mut rec = body.to_vec();
-        while rec.len() % 4 != 0 {
+        while !rec.len().is_multiple_of(4) {
             rec.push(0);
         }
         let mut out = Vec::new();

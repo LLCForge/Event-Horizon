@@ -179,8 +179,9 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("tool.toml");
         std::fs::write(&path, "a = 1\n").unwrap();
+        // SIGHUP is not registered here: CI runners can deliver a stray SIGHUP,
+        // and this test is only about file polling.
         let mut s = ReloadSignal::new();
-        s.listen_sighup().unwrap();
         s.watch_file(path.clone(), Duration::from_millis(50));
         tokio::time::sleep(Duration::from_millis(120)).await;
         std::fs::write(&path, "a = 22\n").unwrap();

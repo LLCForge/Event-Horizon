@@ -204,7 +204,7 @@ dizinine asla dokunmaz, `--keep` ile verilen mevcut dosyaları atlar ve tekrar
 
 ## Platformlar ve MSRV
 
-Windows, macOS ve Linux (CI üçünde de çalışır). Rust 1.85+ (lettre gerektirir).
+Windows, macOS ve Linux (CI üçünde de çalışır). Rust 1.88+ (bağımlılıklar gerektirir).
 Cargo özellikleri: `cli` (clap alt komutları), `smtp` (e-posta sink'i), `service`
 (Windows servisi); hepsi varsayılan olarak açıktır.
 

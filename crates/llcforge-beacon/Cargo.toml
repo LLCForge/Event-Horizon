@@ -2,8 +2,8 @@
 name = "llcforge-beacon"
 version = "0.1.0"
 edition = "2021"
-# lettre >= 0.11.21 requires 1.85; everything else builds on 1.80.
-rust-version = "1.85"
+# icu_* (pulled in by reqwest -> url -> idna) requires 1.88.
+rust-version = "1.88"
 license = "MIT"
 authors = ["LLCForge contributors"]
 repository = "https://github.com/LLCForge/Beacon"
