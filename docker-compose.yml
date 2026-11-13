@@ -1,0 +1,28 @@
+# Example: docker compose up -d
+# Put secrets (bot tokens, routing keys, ...) in ./event-horizon.env (KEY=value lines,
+# never committed) and reference them from the TOML via *_env settings.
+services:
+  event-horizon:
+    image: ghcr.io/llcforge/event-horizon:latest
+    # build: .
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    env_file:
+      - path: ./event-horizon.env
+        required: false
+    volumes:
+      - ./event-horizon.toml:/etc/event-horizon/event-horizon.toml:ro
+      - event-horizon-data:/data
+    ports:
+      # Metrics + /healthz + /readyz. Bind to loopback; expose deliberately.
+      - "127.0.0.1:9180:9180"
+      # Trigger API (bind api.listen to 0.0.0.0 inside the container, enable [api.tls]).
+      # - "127.0.0.1:9179:9179"
+      # Flow collectors: sFlow and NetFlow v9 / IPFIX.
+      # - "6343:6343/udp"
+      # - "2055:2055/udp"
+
+volumes:
+  event-horizon-data:

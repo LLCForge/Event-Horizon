@@ -1,0 +1,126 @@
+# Prometheus alerting rules for Event Horizon (generic llcforge-alert metrics).
+# Load with `rule_files: ["event-horizon-rules.yml"]` or as a PrometheusRule `spec`.
+# Assumes the scrape job is named "event-horizon"; adjust the `job` matcher if not.
+groups:
+  - name: event-horizon.availability
+    rules:
+      - alert: EventHorizonDown
+        expr: up{job="event-horizon"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Event Horizon is down on {{ $labels.instance }}"
+          description: "The Event Horizon metrics endpoint has not been scrapeable for 5 minutes."
+
+      - alert: EventHorizonAbsent
+        expr: absent(up{job="event-horizon"})
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "No Event Horizon targets are being scraped"
+
+  - name: event-horizon.alert-delivery
+    rules:
+      - alert: EventHorizonAlertDeliveryFailing
+        expr: increase(llcforge_alert_sink_failed_total{tool="event-horizon"}[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Event Horizon cannot deliver alerts to sink {{ $labels.sink }} ({{ $labels.type }})"
+          description: "{{ $value | humanize }} delivery failures in 15 minutes. Undelivered alerts stay queued and are retried."
+
+      - alert: EventHorizonAlertsDropped
+        expr: increase(llcforge_alert_dropped_total{tool="event-horizon"}[15m]) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Event Horizon dropped alerts on {{ $labels.instance }}"
+          description: "Alerts were dropped (intake channel full, queue bound reached or delivery expired)."
+
+      - alert: EventHorizonAlertQueueBacklog
+        expr: llcforge_alert_queue_depth{tool="event-horizon"} > 100
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Event Horizon alert queue backlog: {{ $value }} pending"
+          description: "Alerts are accumulating faster than sinks accept them, or a sink has been down for 15 minutes."
+
+      - alert: EventHorizonSinkBacklog
+        expr: llcforge_alert_sink_queued{tool="event-horizon"} > 50
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Event Horizon sink {{ $labels.sink }} has {{ $value }} undelivered alerts"
+
+  - name: event-horizon.mitigation
+    rules:
+      - alert: EventHorizonBgpSessionDown
+        expr: event_horizon_bgp_session_established == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Event Horizon BGP session to {{ $labels.upstream }} is down"
+          description: "Blackholes and FlowSpec rules cannot reach this upstream until the session is re-established."
+
+      - alert: EventHorizonPolicyDenials
+        expr: increase(event_horizon_decisions_total{result="deny"}[15m]) > 5
+        labels:
+          severity: warning
+        annotations:
+          summary: "Event Horizon denied {{ $value | humanize }} mitigation requests in 15 minutes"
+          description: "See the audit log (event deny) for the codes, e.g. max_active, not_protected or never_list."
+
+      - alert: EventHorizonEscalation
+        expr: increase(event_horizon_escalations_total[10m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "An attack was escalated from FlowSpec to RTBH on {{ $labels.instance }}"
+
+      - alert: EventHorizonApprovalsWaiting
+        expr: event_horizon_approvals_pending > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $value }} mitigation request(s) waiting for manual approval"
+          description: "Unanswered requests are denied when approval.timeout expires."
+
+      - alert: EventHorizonBlackholeNotPropagated
+        expr: increase(event_horizon_propagation_checks_total{status="not_seen"}[30m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "A blackhole route is not visible outside your network"
+          description: "RIPEstat / Pathology did not see an announced host route; check upstream filters and the session."
+
+      - alert: EventHorizonFlowCollectorRejects
+        expr: rate(event_horizon_sflow_datagrams_total{result=~"rejected_source|malformed"}[10m]) > 0 or rate(event_horizon_netflow_datagrams_total{result=~"rejected_source|malformed"}[10m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Event Horizon is dropping flow datagrams ({{ $labels.result }})"
+          description: "Check detect.*.exporters and the exporter configuration."
+
+      - alert: EventHorizonNetflowTemplatesMissing
+        expr: rate(event_horizon_netflow_records_without_template_total[10m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "NetFlow/IPFIX data arrives without templates"
+          description: "Exporters must resend templates periodically; detection is blind for these records."
+
+      - alert: EventHorizonApiTlsFailures
+        expr: increase(event_horizon_api_rejected_total{reason=~"tls_handshake|unauthorized"}[15m]) > 20
+        labels:
+          severity: warning
+        annotations:
+          summary: "Many rejected trigger API connections ({{ $labels.reason }})"

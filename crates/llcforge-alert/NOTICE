@@ -1,0 +1,14 @@
+llcforge-alert
+Copyright (c) 2026 LLCForge and the llcforge-alert contributors
+
+This product is licensed under the MIT License (see LICENSE).
+
+It depends on third-party crates distributed under their own licenses
+(MIT, Apache-2.0, BSD, ISC, Unicode-3.0, MPL-2.0 and compatible), including
+tokio, axum, reqwest, rustls, ring, lettre, serde, tracing, chrono, clap and
+windows-service. Their license texts ship with their sources on crates.io;
+`cargo deny check licenses` and the CycloneDX SBOM produced by CI list them.
+
+Telegram, Slack, Discord, Microsoft Teams, PagerDuty and Opsgenie are
+trademarks of their respective owners. This project is not affiliated with
+or endorsed by them.

@@ -1,0 +1,115 @@
+# Event Horizon example configuration.
+# All addresses are documentation ranges (RFC 5737 / RFC 3849) and ASNs are
+# documentation / private ASNs (RFC 5398 / RFC 6996). Replace them with your own.
+# Secrets are never written here: every *_env key names an environment variable.
+
+dry_run = true                                # log what would be sent; no BGP sessions are opened
+# data_dir = "/var/lib/event-horizon"         # default: $STATE_DIRECTORY or the platform data dir
+state_file = "event-horizon.state.json"       # active blackholes + FlowSpec rules, rewritten atomically
+audit_log = "event-horizon-audit.jsonl"       # append-only JSON lines
+
+[log]
+format = "text"                               # "text" or "json"
+level = "info"
+
+[bgp]
+local_asn = 64500
+router_id = "192.0.2.10"
+hold_time = 90
+next_hop_v4 = "192.0.2.1"                     # discard next hop, null-routed on your edge
+next_hop_v6 = "100::1"                        # RFC 6666 discard prefix
+graceful_restart = { restart_time = "2m" }    # RFC 4724; omit to close with a Cease on shutdown
+
+[[bgp.upstream]]
+name = "transit-a"
+neighbor = "203.0.113.1"
+remote_asn = 64496
+communities = ["64496:666"]                   # 65535:666 and NO_EXPORT are always added
+flowspec = true                               # negotiate FlowSpec (SAFI 133) on this session
+# md5_password_env = "TRANSIT_A_MD5"          # RFC 2385 TCP-MD5, Linux only
+regions = { eu = ["64496:6661"], us = ["64496:6662"] }   # regional / selective blackholing
+
+[[bgp.upstream]]
+name = "transit-b"
+neighbor = "203.0.113.5"
+remote_asn = 64497
+communities = ["64497:9999"]
+ebgp_multihop = 2                             # IP TTL for a non-adjacent neighbor
+local_address = "192.0.2.10"                  # source address of the session
+
+[guardrails]
+protected = ["198.51.100.0/24", "2001:db8:100::/48"]   # only host routes inside these may be blackholed
+never = ["198.51.100.1/32", "198.51.100.53/32"]        # e.g. gateway and DNS resolver
+max_active = 16
+ttl = { min = "5m", default = "30m", max = "6h" }
+
+[flowspec]
+action = "rate-limit"                         # "rate-limit" or "discard"
+rate_limit_kbps = 10000
+allow_discard = true                          # policy: permit discard rules at all
+max_active = 32
+escalate_after = "2m"                         # announce RTBH if the attack is still running
+
+[approval]
+mode = "off"                                  # "off", "detector" (automatic requests) or "all"
+timeout = "5m"                                # unanswered requests are denied
+
+[approval.telegram]
+bot_token_env = "EVENT_HORIZON_APPROVAL_BOT_TOKEN"
+chat_id = -1001234567890
+allowed_user_ids = [100000001]
+
+[api]
+listen = "127.0.0.1:9179"
+token_env = "EVENT_HORIZON_API_TOKEN"         # the token itself is read from this environment variable
+max_body_bytes = 4096
+rate_limit_per_minute = 60
+# tls = { cert_file = "/etc/event-horizon/api.pem", key_file = "/etc/event-horizon/api.key", client_ca_file = "/etc/event-horizon/clients-ca.pem" }
+
+[metrics]
+listen = "127.0.0.1:9180"                     # /metrics, /healthz, /readyz
+
+[detect]
+threshold = { pps = 500000, mbps = 2000 }
+release = { pps = 100000, mbps = 400 }
+window = "10s"
+trigger_after = "30s"
+release_after = "2m"
+baseline = { alpha = 0.02, multiplier = 5.0, min_pps = 50000, min_mbps = 200, warmup = "10m" }
+
+[detect.sflow]
+listen = "0.0.0.0:6343"
+exporters = ["192.0.2.21", "192.0.2.22"]      # datagrams from any other source are dropped
+
+[detect.netflow]
+listen = "0.0.0.0:2055"                       # NetFlow v9 and IPFIX on the same socket
+exporters = ["192.0.2.23"]
+sampling_rate = 1000                          # used when records carry no sampling interval
+
+[propagation]
+ripestat = true                               # RIPEstat looking-glass (public RIS peers)
+# pathology_url = "http://127.0.0.1:8180"     # also ask Pathology for your own routers' view
+delay = "2m"
+interval = "10m"
+
+[reports]
+keep = 200                                    # per-victim attack reports (JSON + Markdown)
+
+[alerts]
+dedup_window_secs = 300
+
+[[alerts.sink]]
+type = "stdout"
+format = "text"
+
+# [[alerts.sink]]
+# type = "telegram"
+# bot_token_env = "TELEGRAM_BOT_TOKEN"
+# chat_id = -1001234567890
+# min_severity = "warning"
+
+[silences]
+# api_token_env = "EVENT_HORIZON_ADMIN_TOKEN" # mounts /v1/silences on the metrics listener
+
+[health]
+# admin_token_env = "EVENT_HORIZON_ADMIN_TOKEN" # mounts POST /v1/reload on the metrics listener

@@ -1,0 +1,70 @@
+# Event Horizon systemd unit (hardened). Installed by the .deb/.rpm packages as
+# /usr/lib/systemd/system/event-horizon.service. Secrets go in /etc/event-horizon/event-horizon.env
+# (KEY=value, mode 0600, root-owned): systemd reads it before dropping privileges.
+[Unit]
+Description=Event Horizon - Automated guard-railed RTBH and FlowSpec DDoS mitigation over BGP
+Documentation=https://github.com/LLCForge/Event-Horizon
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/event-horizon run --config /etc/event-horizon/event-horizon.toml
+# SIGHUP triggers the llcforge-alert ReloadSignal (config reload).
+ExecReload=/bin/kill -HUP $MAINPID
+EnvironmentFile=-/etc/event-horizon/event-horizon.env
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+
+# Identity and state: a transient UID, /var/lib/event-horizon exported as $STATE_DIRECTORY.
+DynamicUser=yes
+StateDirectory=event-horizon
+StateDirectoryMode=0750
+ConfigurationDirectory=event-horizon
+WorkingDirectory=%S/event-horizon
+UMask=0077
+
+# Capabilities: none by default.
+# A tool that binds a privileged port (< 1024, e.g. BGP on 179) needs:
+#   CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+#   AmbientCapabilities=CAP_NET_BIND_SERVICE
+# A tool that sends raw ICMP / traceroute probes needs CAP_NET_RAW the same way.
+CapabilityBoundingSet=
+AmbientCapabilities=
+NoNewPrivileges=yes
+
+# Filesystem and kernel isolation.
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+ProcSubset=pid
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RemoveIPC=yes
+
+# Network: IPv4/IPv6 plus AF_UNIX (local syslog socket, journald).
+# Add AF_NETLINK only if the tool reads interface/route tables.
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+# System calls.
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+SystemCallErrorNumber=EPERM
+
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

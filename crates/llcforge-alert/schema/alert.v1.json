@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LLCForge/llcforge-alert/schema/alert.v1.json",
+  "title": "LLCForge alert v1",
+  "description": "Tool-neutral alert emitted by every LLCForge tool (webhook body, stdout JSON, queue records).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "tool", "kind", "severity", "title", "summary", "fields", "first_seen", "last_seen", "links", "resolved"],
+  "properties": {
+    "schema": { "type": "string", "const": "llcforge.alert.v1" },
+    "id": { "type": "string", "minLength": 1, "maxLength": 512, "description": "Stable deduplication key; the same condition always yields the same id. Also the PagerDuty dedup_key and Opsgenie alias." },
+    "tool": { "type": "string", "minLength": 1, "maxLength": 64, "description": "Emitting tool, e.g. vigil, herald." },
+    "kind": { "type": "string", "minLength": 1, "maxLength": 128, "description": "Tool-specific alert type, e.g. origin_hijack." },
+    "severity": { "type": "string", "enum": ["info", "warning", "critical"] },
+    "title": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "summary": { "type": "string", "maxLength": 8192 },
+    "fields": {
+      "type": "array",
+      "maxItems": 64,
+      "description": "Ordered key/value details.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "value"],
+        "properties": {
+          "key": { "type": "string", "maxLength": 128 },
+          "value": { "type": "string", "maxLength": 2048 }
+        }
+      }
+    },
+    "resource": { "type": "string", "maxLength": 512, "description": "Affected object: prefix (192.0.2.0/24), domain (www.example.org), IP or ASN." },
+    "first_seen": { "type": "string", "format": "date-time", "description": "RFC 3339, UTC (Z)." },
+    "last_seen": { "type": "string", "format": "date-time", "description": "RFC 3339, UTC (Z)." },
+    "links": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "url"],
+        "properties": {
+          "title": { "type": "string", "maxLength": 512 },
+          "url": { "type": "string", "maxLength": 2048, "pattern": "^https?://" }
+        }
+      }
+    },
+    "resolved": { "type": "boolean", "description": "true when this alert clears a previously raised one with the same id." }
+  }
+}

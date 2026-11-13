@@ -1,0 +1,11 @@
+target/
+**/target/
+.git/
+.github/
+deploy/
+*.md
+!README.md
+Dockerfile
+docker-compose.yml
+.env
+*.env

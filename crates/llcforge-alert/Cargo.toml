@@ -1,0 +1,53 @@
+[package]
+name = "llcforge-alert"
+version = "0.1.0"
+edition = "2021"
+# lettre >= 0.11.21 requires 1.85; everything else builds on 1.80.
+rust-version = "1.85"
+license = "MIT"
+authors = ["LLCForge contributors"]
+repository = "https://github.com/LLCForge/llcforge-alert"
+description = "Shared alerting, silences, health, reload and service plumbing for the LLCForge network tools"
+readme = "README.md"
+keywords = ["alerting", "webhook", "syslog", "pagerduty", "monitoring"]
+categories = ["network-programming"]
+include = ["src/**", "schema/**", "examples/**", "Cargo.toml", "README.md", "LICENSE", "NOTICE"]
+
+[features]
+default = ["cli", "smtp", "service"]
+# clap subcommands for `<tool> silence ...` and `<tool> service ...`.
+cli = ["dep:clap"]
+# SMTP e-mail sink via lettre (rustls).
+smtp = ["dep:lettre"]
+# Windows service entry point / installer (no-op helpers on Unix).
+service = ["dep:windows-service"]
+
+[dependencies]
+anyhow = "1"
+axum = { version = "0.8", default-features = false, features = ["http1", "json", "tokio"] }
+chrono = { version = "0.4", default-features = false, features = ["std", "clock", "serde"] }
+clap = { version = "4", optional = true, features = ["derive"] }
+fastrand = "2"
+lettre = { version = "0.11", optional = true, default-features = false, features = ["smtp-transport", "tokio1-rustls-tls", "builder", "hostname"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+ring = "0.17"
+rustls = { version = "0.23", default-features = false, features = ["std", "ring", "tls12", "logging"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "time", "sync", "signal", "io-util", "fs"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12", "logging"] }
+toml = "0.8"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "json", "env-filter", "ansi", "std"] }
+webpki-roots = "1"
+
+[[example]]
+name = "integration"
+required-features = ["cli"]
+
+[target.'cfg(windows)'.dependencies]
+windows-service = { version = "0.8", optional = true }
+
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }

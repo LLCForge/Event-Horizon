@@ -1,0 +1,18 @@
+# winget default-locale manifest for Event Horizon. @VERSION@ is filled in by the release workflow.
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.6.0.schema.json
+PackageIdentifier: LLCForge.Event-Horizon
+PackageVersion: "@VERSION@"
+PackageLocale: en-US
+Publisher: LLCForge
+PublisherUrl: https://github.com/LLCForge
+PackageName: Event Horizon
+PackageUrl: https://github.com/LLCForge/Event-Horizon
+License: MIT
+LicenseUrl: https://github.com/LLCForge/Event-Horizon/blob/main/LICENSE
+ShortDescription: Automated guard-railed RTBH and FlowSpec DDoS mitigation over BGP
+Tags:
+  - networking
+  - monitoring
+  - llcforge
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0

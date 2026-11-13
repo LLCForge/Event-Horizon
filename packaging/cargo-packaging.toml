@@ -1,0 +1,38 @@
+# Cargo.toml fragment for Event Horizon packaging. Paste both tables at the end of
+# the tool's Cargo.toml (sync.py does not edit Cargo.toml). The release
+# workflow runs `cargo deb --no-build --target <triple>` and
+# `cargo generate-rpm --target <triple>`; both rewrite target/release/ to
+# target/<triple>/release/ automatically.
+
+[package.metadata.deb]
+# Replace with the project's packaging contact before the first release.
+maintainer = "LLCForge contributors <https://github.com/LLCForge>"
+copyright = "2026, LLCForge contributors"
+license-file = ["LICENSE", "0"]
+extended-description = "Automated guard-railed RTBH and FlowSpec DDoS mitigation over BGP"
+section = "net"
+priority = "optional"
+depends = "$auto"
+assets = [
+    ["target/release/event-horizon", "usr/bin/", "755"],
+    ["event-horizon.example.toml", "etc/event-horizon/event-horizon.toml", "644"],
+    ["README.md", "usr/share/doc/event-horizon/README.md", "644"],
+    ["NOTICE", "usr/share/doc/event-horizon/NOTICE", "644"],
+]
+conf-files = ["/etc/event-horizon/event-horizon.toml"]
+# Installs packaging/systemd/event-horizon.service and the matching maintainer scripts;
+# the unit is not enabled automatically (configure first, then enable).
+systemd-units = { unit-name = "event-horizon", unit-scripts = "packaging/systemd", enable = false, start = false }
+
+[package.metadata.generate-rpm]
+license = "MIT"
+summary = "Automated guard-railed RTBH and FlowSpec DDoS mitigation over BGP"
+assets = [
+    { source = "target/release/event-horizon", dest = "/usr/bin/event-horizon", mode = "755" },
+    { source = "packaging/systemd/event-horizon.service", dest = "/usr/lib/systemd/system/event-horizon.service", mode = "644" },
+    { source = "event-horizon.example.toml", dest = "/etc/event-horizon/event-horizon.toml", mode = "644", config = "noreplace" },
+    { source = "README.md", dest = "/usr/share/doc/event-horizon/README.md", mode = "644", doc = true },
+    { source = "LICENSE", dest = "/usr/share/licenses/event-horizon/LICENSE", mode = "644", doc = true },
+]
+post_install_script = "systemctl daemon-reload >/dev/null 2>&1 || :"
+post_uninstall_script = "systemctl daemon-reload >/dev/null 2>&1 || :"

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1309 288" width="1309" height="288" role="img" aria-label="Event-Horizon">
+<rect width="1309" height="288" rx="14" fill="#0E1013"/>
+<rect x="0.5" y="0.5" width="1308" height="287" rx="14" fill="none" stroke="#2A2F36"/>
+<circle cx="24" cy="22" r="6" fill="#FF5F57"/><circle cx="44" cy="22" r="6" fill="#FEBC2E"/><circle cx="64" cy="22" r="6" fill="#28C840"/>
+<text x="654.5" y="27" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" fill="#7C838D">Event-Horizon</text>
+<line x1="0" y1="42" x2="1309" y2="42" stroke="#22262C"/>
+<g font-family="ui-monospace, SFMono-Regular, 'Cascadia Mono', Consolas, Menlo, monospace" font-size="14" fill="#C9CDD3">
+<text x="24" y="66" xml:space="preserve"><tspan fill="#E5484D">$</tspan> <tspan fill="#F4F5F7" font-weight="700">event-horizon --config demo.toml run</tspan></text>
+<text x="24" y="88" xml:space="preserve">[<tspan fill="#5CD08B">INFO</tspan>] event-horizon/started: Event Horizon started (<tspan fill="#F5C451">dry-run</tspan>) version=&quot;0.1.0&quot; upstreams=&quot;1&quot;</text>
+<text x="24" y="110" xml:space="preserve">[<tspan fill="#F5C451">WARNING</tspan>] event-horizon/attack <tspan fill="#7CC4FF">198.51.100.7</tspan>: DDoS attack on <tspan fill="#7CC4FF">198.51.100.7</tspan>: udp_amplification_dns pps=&quot;2500&quot; rate=&quot;28.0 Mbit/s&quot;</text>
+<text x="24" y="132" xml:space="preserve">[<tspan fill="#F5C451">WARNING</tspan>] event-horizon/flowspec <tspan fill="#7CC4FF">198.51.100.7</tspan>-17-s53-dany: rule=&quot;dst <tspan fill="#7CC4FF">198.51.100.7</tspan> proto 17 src-port 53 -&gt; rate-limit 10000 kbit/s&quot; <tspan fill="#F5C451">dry_run</tspan>=&quot;true&quot;</text>
+<text x="24" y="154" xml:space="preserve">[<tspan fill="#5CD08B">INFO</tspan>] event-horizon/blackhole <tspan fill="#7CC4FF">198.51.100.7</tspan>: Blackhole for <tspan fill="#7CC4FF">198.51.100.7</tspan> (<tspan fill="#F5C451">dry-run</tspan>, not announced) - escalated, attack persisted 6s after FlowSpec</text>
+<text x="24" y="176" xml:space="preserve">[<tspan fill="#FF6B6B">CRITICAL</tspan>] event-horizon/escalation <tspan fill="#7CC4FF">198.51.100.7</tspan>: Attack on <tspan fill="#7CC4FF">198.51.100.7</tspan> escalated to RTBH class=&quot;udp_amplification_dns&quot;</text>
+<text x="24" y="198" xml:space="preserve">[<tspan fill="#5CD08B">RESOLVED</tspan>] event-horizon/blackhole <tspan fill="#7CC4FF">198.51.100.7</tspan>: Blackhole withdrawn for <tspan fill="#7CC4FF">198.51.100.7</tspan> cause=&quot;traffic below release threshold&quot;</text>
+<text x="24" y="220" xml:space="preserve">[<tspan fill="#5CD08B">RESOLVED</tspan>] event-horizon/propagation <tspan fill="#7CC4FF">198.51.100.7</tspan>: Blackhole for <tspan fill="#7CC4FF">198.51.100.7</tspan> withdrawn</text>
+<text x="24" y="242" xml:space="preserve">[<tspan fill="#5CD08B">RESOLVED</tspan>] event-horizon/flowspec <tspan fill="#7CC4FF">198.51.100.7</tspan>-17-s53-dany: FlowSpec rule for <tspan fill="#7CC4FF">198.51.100.7</tspan> withdrawn cause=&quot;traffic below release threshold&quot;</text>
+<text x="24" y="264" xml:space="preserve">[<tspan fill="#5CD08B">RESOLVED</tspan>] event-horizon/attack <tspan fill="#7CC4FF">198.51.100.7</tspan>: Attack on <tspan fill="#7CC4FF">198.51.100.7</tspan> ended - udp_amplification_dns for 17s, peak 2500 pps / 28.0 Mbit/s</text>
+</g>
+</svg>

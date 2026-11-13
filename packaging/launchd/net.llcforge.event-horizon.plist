@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Event Horizon launchd daemon for macOS.
+  Install:
+    sudo mkdir -p /usr/local/etc/event-horizon /usr/local/var/lib/event-horizon /usr/local/var/log
+    sudo cp event-horizon.example.toml /usr/local/etc/event-horizon/event-horizon.toml
+    sudo chown -R nobody:nobody /usr/local/var/lib/event-horizon
+    sudo touch /usr/local/var/log/event-horizon.log && sudo chown nobody /usr/local/var/log/event-horizon.log
+    sudo cp net.llcforge.event-horizon.plist /Library/LaunchDaemons/
+    sudo launchctl bootstrap system /Library/LaunchDaemons/net.llcforge.event-horizon.plist
+  Reload config: sudo launchctl kill HUP system/net.llcforge.event-horizon
+  Secrets: add them under EnvironmentVariables below and keep this file
+  mode 0600 root:wheel, or source them from a wrapper script.
+  On Apple silicon with Homebrew, the binary lives in /opt/homebrew/bin.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>net.llcforge.event-horizon</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/event-horizon</string>
+    <string>run</string>
+    <string>--config</string>
+    <string>/usr/local/etc/event-horizon/event-horizon.toml</string>
+  </array>
+  <key>UserName</key>
+  <string>nobody</string>
+  <key>GroupName</key>
+  <string>nobody</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>STATE_DIRECTORY</key>
+    <string>/usr/local/var/lib/event-horizon</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>/usr/local/var/lib/event-horizon</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>Umask</key>
+  <integer>63</integer>
+  <key>StandardOutPath</key>
+  <string>/usr/local/var/log/event-horizon.log</string>
+  <key>StandardErrorPath</key>
+  <string>/usr/local/var/log/event-horizon.log</string>
+</dict>
+</plist>

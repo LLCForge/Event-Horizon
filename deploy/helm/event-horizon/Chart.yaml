@@ -1,0 +1,14 @@
+apiVersion: v2
+name: event-horizon
+description: "Automated guard-railed RTBH and FlowSpec DDoS mitigation over BGP"
+type: application
+# Chart version; bump on chart changes. appVersion follows the release tag.
+version: 0.1.0
+appVersion: "0.1.0"
+home: https://github.com/LLCForge/Event-Horizon
+sources:
+  - https://github.com/LLCForge/Event-Horizon
+keywords:
+  - networking
+  - monitoring
+  - llcforge

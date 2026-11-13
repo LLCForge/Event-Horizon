@@ -1,0 +1,18 @@
+Event Horizon
+Copyright 2026 LLCForge and the Event Horizon contributors
+
+This product is licensed under the MIT License.
+See the LICENSE file for the full license text.
+
+Event Horizon is part of the LLCForge network tooling suite:
+https://github.com/LLCForge
+
+CODE_OF_CONDUCT.md is adapted from the Contributor Covenant, version 2.1,
+available at https://www.contributor-covenant.org/version/2/1/code_of_conduct.html
+and licensed under CC BY 4.0.
+
+The logo and icon files in the assets/ directory are part of this project and
+are distributed under the same MIT License.
+
+Third-party Rust crates used by this project are distributed under their own
+licenses; see Cargo.lock and each crate's metadata for details.

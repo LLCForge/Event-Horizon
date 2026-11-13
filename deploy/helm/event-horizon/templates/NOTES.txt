@@ -1,0 +1,4 @@
+{{ .Chart.Name }} is deployed as {{ include "chart.fullname" . }}.
+
+Health:  kubectl port-forward svc/{{ include "chart.fullname" . }} {{ .Values.metrics.port }} then curl -s localhost:{{ .Values.metrics.port }}/readyz
+Metrics: http://{{ include "chart.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.metrics.port }}/metrics

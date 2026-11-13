@@ -1,0 +1,9 @@
+# winget version manifest for Event Horizon. @VERSION@ is filled in by the release
+# workflow; submit the three rendered files to microsoft/winget-pkgs under
+# manifests/l/LLCForge/Event-Horizon/<version>/.
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.version.1.6.0.schema.json
+PackageIdentifier: LLCForge.Event-Horizon
+PackageVersion: "@VERSION@"
+DefaultLocale: en-US
+ManifestType: version
+ManifestVersion: 1.6.0

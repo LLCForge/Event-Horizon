@@ -1,0 +1,19 @@
+# winget installer manifest for Event Horizon. @VERSION@ and @SHA256_*@ are filled
+# in by the release workflow (uppercase hex is also accepted by winget).
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.6.0.schema.json
+PackageIdentifier: LLCForge.Event-Horizon
+PackageVersion: "@VERSION@"
+InstallerType: zip
+NestedInstallerType: portable
+NestedInstallerFiles:
+  - RelativeFilePath: event-horizon.exe
+    PortableCommandAlias: event-horizon
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/LLCForge/Event-Horizon/releases/download/v@VERSION@/event-horizon-@VERSION@-x86_64-pc-windows-msvc.zip
+    InstallerSha256: "@SHA256_X86_64_WINDOWS@"
+  - Architecture: arm64
+    InstallerUrl: https://github.com/LLCForge/Event-Horizon/releases/download/v@VERSION@/event-horizon-@VERSION@-aarch64-pc-windows-msvc.zip
+    InstallerSha256: "@SHA256_AARCH64_WINDOWS@"
+ManifestType: installer
+ManifestVersion: 1.6.0

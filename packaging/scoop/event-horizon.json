@@ -1,0 +1,33 @@
+{
+    "##": "Scoop manifest for Event Horizon. @VERSION@ and @SHA256_*@ are filled in by the release workflow; checkver/autoupdate keep it current afterwards.",
+    "version": "@VERSION@",
+    "description": "Automated guard-railed RTBH and FlowSpec DDoS mitigation over BGP",
+    "homepage": "https://github.com/LLCForge/Event-Horizon",
+    "license": "MIT",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/LLCForge/Event-Horizon/releases/download/v@VERSION@/event-horizon-@VERSION@-x86_64-pc-windows-msvc.zip",
+            "hash": "@SHA256_X86_64_WINDOWS@"
+        },
+        "arm64": {
+            "url": "https://github.com/LLCForge/Event-Horizon/releases/download/v@VERSION@/event-horizon-@VERSION@-aarch64-pc-windows-msvc.zip",
+            "hash": "@SHA256_AARCH64_WINDOWS@"
+        }
+    },
+    "bin": "event-horizon.exe",
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/LLCForge/Event-Horizon/releases/download/v$version/event-horizon-$version-x86_64-pc-windows-msvc.zip"
+            },
+            "arm64": {
+                "url": "https://github.com/LLCForge/Event-Horizon/releases/download/v$version/event-horizon-$version-aarch64-pc-windows-msvc.zip"
+            }
+        },
+        "hash": {
+            "url": "$baseurl/SHA256SUMS",
+            "regex": "$sha256\\s+$basename"
+        }
+    }
+}

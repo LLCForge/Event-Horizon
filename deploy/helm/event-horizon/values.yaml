@@ -1,0 +1,121 @@
+# Default values for the Event Horizon chart.
+
+image:
+  repository: ghcr.io/llcforge/event-horizon
+  # Defaults to .Chart.AppVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Single replica: the alert queue and silences live on the PVC (ReadWriteOnce).
+replicaCount: 1
+
+args: ["run", "--config", "/etc/event-horizon/event-horizon.toml"]
+
+# TOML configuration mounted at /etc/event-horizon/event-horizon.toml. Secrets must be
+# referenced by environment-variable name (*_env), never inlined here.
+# The metrics/health listener must bind 0.0.0.0 inside the pod.
+config: |
+  dry_run = true                       # flip to false only after checking the audit log
+  [bgp]
+  local_asn = 64500
+  router_id = "192.0.2.10"
+  [[bgp.upstream]]
+  name = "transit-a"
+  neighbor = "203.0.113.1"
+  remote_asn = 64496
+  communities = ["64496:666"]
+  [guardrails]
+  protected = ["198.51.100.0/24"]
+  max_active = 16
+  ttl = { min = "5m", default = "30m", max = "6h" }
+  [metrics]
+  listen = "0.0.0.0:9180"              # /metrics, /healthz, /readyz for probes
+  [alerts]
+  dedup_window_secs = 300
+  [[alerts.sink]]
+  type = "stdout"
+  format = "json"
+
+# Secrets as environment variables.
+# Every key of an existing Secret:
+envFromSecret: ""
+# Or individual keys:
+secretEnv: []
+#  - name: TELEGRAM_BOT_TOKEN
+#    secretName: event-horizon-secrets
+#    key: telegram-bot-token
+
+# Plain (non-secret) environment variables.
+env: []
+
+metrics:
+  port: 9180
+
+# Additional container/service ports. Event Horizon connects out to BGP peers
+# (no listening port); expose the trigger API and the flow collectors here.
+extraPorts: []
+#  - name: api
+#    port: 9179
+#    protocol: TCP
+#  - name: sflow
+#    port: 6343
+#    protocol: UDP
+#  - name: netflow
+#    port: 2055
+#    protocol: UDP
+#  - name: bgp
+#    port: 179
+#    protocol: TCP
+
+service:
+  type: ClusterIP
+  annotations: {}
+
+persistence:
+  enabled: true
+  storageClass: ""
+  size: 1Gi
+  accessModes: [ReadWriteOnce]
+  existingClaim: ""
+
+serviceMonitor:
+  enabled: false
+  interval: 30s
+  labels: {}
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: [ALL]
+    # Tools binding ports < 1024 need NET_BIND_SERVICE; raw probes need NET_RAW.
+    add: []
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podAnnotations: {}
