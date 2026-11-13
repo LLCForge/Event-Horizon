@@ -43,7 +43,7 @@ libc = "0.2"
 
 [dev-dependencies]
 http-body-util = "0.1"
-rcgen = "0.13"
+rcgen = "0.14"
 
 [profile.release]
 lto = "thin"
