@@ -1,4 +1,4 @@
-//! How an LLCForge tool wires llcforge-alert (compiled by `cargo clippy --all-targets`).
+//! How an LLCForge tool wires llcforge-beacon (compiled by `cargo clippy --all-targets`).
 //!
 //! Run: `cargo run --example integration -- run --config demo.toml`
 
@@ -7,8 +7,8 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use clap::{Parser, Subcommand};
-use llcforge_alert::cli::{run_silence_command, ServiceCommand, SilenceCommand};
-use llcforge_alert::{
+use llcforge_beacon::cli::{run_silence_command, ServiceCommand, SilenceCommand};
+use llcforge_beacon::{
     default_data_dir, health_router, init_logging, reload_router, run_service_command,
     silences_router, Alert, AlertsConfig, ApiToken, Dispatcher, DispatcherOptions, HealthConfig,
     LogFormat, Readiness, ReloadSignal, ServiceSpec, Severity, Shutdown, SilenceStore,
@@ -19,7 +19,7 @@ use serde::Deserialize;
 const SPEC: ServiceSpec = ServiceSpec {
     bin: "demo-tool",
     display_name: "Demo Tool",
-    description: "Example integration of llcforge-alert",
+    description: "Example integration of llcforge-beacon",
 };
 
 #[derive(Parser)]
@@ -64,7 +64,7 @@ fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
     init_logging(LogFormat::Text, "info", None)?;
     match cli.command {
-        Command::Run => llcforge_alert::service::run_foreground(cli.config, daemon),
+        Command::Run => llcforge_beacon::service::run_foreground(cli.config, daemon),
         Command::Silence { cmd } => {
             let cfg = load(&cli.config)?;
             let data = cfg.data_dir.unwrap_or_else(|| default_data_dir(SPEC.bin));
@@ -102,7 +102,7 @@ fn daemon(config: PathBuf, mut shutdown: Shutdown) -> anyhow::Result<()> {
         }
         if let Some(addr) = cfg.health.listen {
             let mut sd = shutdown.clone();
-            tokio::spawn(llcforge_alert::serve(addr, admin, async move { sd.wait().await }));
+            tokio::spawn(llcforge_beacon::serve(addr, admin, async move { sd.wait().await }));
         }
 
         readiness.set("feed", true);

@@ -66,7 +66,7 @@ mod tests {
     fn parses_format_and_filter() {
         assert_eq!("JSON".parse::<LogFormat>().unwrap(), LogFormat::Json);
         assert!("xml".parse::<LogFormat>().is_err());
-        assert!(build_filter("info", Some("llcforge_alert=debug,warn")).is_ok());
+        assert!(build_filter("info", Some("llcforge_beacon=debug,warn")).is_ok());
         assert!(build_filter("info", Some("[[[")).is_err());
     }
 

@@ -60,7 +60,7 @@ impl AlertHandle {
     }
 
     /// Never blocks. Returns `false` when the alert was dropped (channel full or
-    /// dispatcher stopped); this is counted in `llcforge_alert_dropped_total`.
+    /// dispatcher stopped); this is counted in `llcforge_beacon_dropped_total`.
     pub fn send(&self, alert: Alert) -> bool {
         let Some(tx) = &self.tx else {
             tracing::info!(alert_id = %alert.id, "alert (no sinks configured): {}", alert.headline());
@@ -644,7 +644,7 @@ mod tests {
         let mut out = String::new();
         m.render_prometheus(&mut out);
         assert!(out.contains(
-            "llcforge_alert_sink_sent_total{tool=\"vigil\",sink=\"a\",type=\"probe\"} 3"
+            "llcforge_beacon_sink_sent_total{tool=\"vigil\",sink=\"a\",type=\"probe\"} 3"
         ));
         d.shutdown(Duration::from_secs(1)).await;
     }

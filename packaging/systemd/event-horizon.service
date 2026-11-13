@@ -10,7 +10,7 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/event-horizon run --config /etc/event-horizon/event-horizon.toml
-# SIGHUP triggers the llcforge-alert ReloadSignal (config reload).
+# SIGHUP triggers the llcforge-beacon ReloadSignal (config reload).
 ExecReload=/bin/kill -HUP $MAINPID
 EnvironmentFile=-/etc/event-horizon/event-horizon.env
 Restart=on-failure

@@ -1,9 +1,9 @@
-//! Swappable llcforge-alert handle (40). Every task holds an `Alerts` clone;
+//! Swappable llcforge-beacon handle (40). Every task holds an `Alerts` clone;
 //! a configuration reload restarts the dispatcher and swaps the handle in place.
 
 use std::sync::{Arc, RwLock};
 
-use llcforge_alert::{Alert, AlertHandle, Severity};
+use llcforge_beacon::{Alert, AlertHandle, Severity};
 
 use crate::config::BIN;
 

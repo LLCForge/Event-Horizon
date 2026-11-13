@@ -157,7 +157,7 @@ impl Checker {
             .user_agent(concat!("event-horizon/", env!("CARGO_PKG_VERSION")))
             .build()?;
         let pathology_token = match &cfg.pathology_token_env {
-            Some(v) => Some(llcforge_alert::env_secret(v)?),
+            Some(v) => Some(llcforge_beacon::env_secret(v)?),
             None => None,
         };
         Ok(Self {

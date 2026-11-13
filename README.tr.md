@@ -59,7 +59,7 @@ Hacimsel bir saldırı transit bağlantılarını doldurduğunda ağının için
 **İşletim**
 
 - **Tetikleme API'si**: blackhole'lar, FlowSpec kuralları, onaylar ve raporlar. Ortam değişkeninden bearer token (sabit zamanlı karşılaştırma), katı JSON şemaları, gövde sınırı, genel hız sınırı, varsayılan `127.0.0.1`, **yerleşik TLS (rustls) ve isteğe bağlı karşılıklı TLS**.
-- Ortak [llcforge-alert](crates/llcforge-alert) kiti ile **alarmlar**: Telegram, HMAC imzalı webhook, Slack, Discord, Teams, e-posta, PagerDuty, Opsgenie, syslog ve stdout; çökmeye dayanıklı kuyruk, tekrar bastırma, susturmalar (`event-horizon silence add|list|remove`, `/v1/silences`) ve kaynak bazlı yönlendirme. Olaylar: saldırı, FlowSpec, blackhole, yükseltme, onay gerekli, tespit isteğinin politika reddi, BGP oturumu düştü, yayılım görülmedi.
+- Ortak [llcforge-beacon](crates/llcforge-beacon) kiti ile **alarmlar**: Telegram, HMAC imzalı webhook, Slack, Discord, Teams, e-posta, PagerDuty, Opsgenie, syslog ve stdout; çökmeye dayanıklı kuyruk, tekrar bastırma, susturmalar (`event-horizon silence add|list|remove`, `/v1/silences`) ve kaynak bazlı yönlendirme. Olaylar: saldırı, FlowSpec, blackhole, yükseltme, onay gerekli, tespit isteğinin politika reddi, BGP oturumu düştü, yayılım görülmedi.
 - Her karar ve UPDATE için JSON satırları olarak **audit log**; **Prometheus** `/metrics`, `/healthz`, `/readyz`; JSON veya metin loglar; yapılandırmayı yeniden yükleme (SIGHUP, dosya değişikliği, `POST /v1/reload`); `event-horizon service install|uninstall|run`.
 - **`simulate`**, bir blackhole (isteğe bağlı bölgesel kapsamla) veya FlowSpec kuralı için politika kararını ve tam UPDATE baytlarını ağa çıkmadan yazdırır.
 

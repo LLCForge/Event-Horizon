@@ -10,7 +10,7 @@ use std::net::IpAddr;
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use llcforge_alert::Severity;
+use llcforge_beacon::Severity;
 use serde::Serialize;
 use serde_json::json;
 use tokio::sync::{mpsc, watch};

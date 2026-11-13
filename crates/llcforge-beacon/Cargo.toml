@@ -1,12 +1,12 @@
 [package]
-name = "llcforge-alert"
+name = "llcforge-beacon"
 version = "0.1.0"
 edition = "2021"
 # lettre >= 0.11.21 requires 1.85; everything else builds on 1.80.
 rust-version = "1.85"
 license = "MIT"
 authors = ["LLCForge contributors"]
-repository = "https://github.com/LLCForge/llcforge-alert"
+repository = "https://github.com/LLCForge/Beacon"
 description = "Shared alerting, silences, health, reload and service plumbing for the LLCForge network tools"
 readme = "README.md"
 keywords = ["alerting", "webhook", "syslog", "pagerduty", "monitoring"]

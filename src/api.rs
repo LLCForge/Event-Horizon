@@ -425,7 +425,7 @@ pub fn router(state: ApiState, max_body_bytes: usize) -> Router {
         .with_state(state)
 }
 
-/// `/metrics`: Event Horizon metrics followed by the llcforge-alert counters.
+/// `/metrics`: Event Horizon metrics followed by the llcforge-beacon counters.
 pub fn metrics_router(metrics: Arc<Metrics>, alerts: Alerts) -> Router {
     Router::new().route(
         "/metrics",
@@ -898,6 +898,6 @@ mod tests {
         let b = resp.into_body().collect().await.unwrap().to_bytes();
         let t = String::from_utf8_lossy(&b);
         assert!(t.contains("event_horizon_active_blackholes"));
-        assert!(t.contains("llcforge_alert_received_total"));
+        assert!(t.contains("llcforge_beacon_received_total"));
     }
 }

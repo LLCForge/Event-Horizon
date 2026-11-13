@@ -59,7 +59,7 @@ When a volumetric attack saturates your transit links, nothing you do inside you
 **Operations**
 
 - **Trigger API**: blackholes, FlowSpec rules, approvals and reports. Bearer token from the environment (constant-time compare), strict JSON schemas, body limit, global rate limit, `127.0.0.1` by default, **built-in TLS (rustls) with optional mutual TLS**.
-- **Alerts** through the shared [llcforge-alert](crates/llcforge-alert) kit: Telegram, webhook with HMAC signature, Slack, Discord, Teams, e-mail, PagerDuty, Opsgenie, syslog and stdout, with a crash-safe queue, dedup, silences (`event-horizon silence add|list|remove`, `/v1/silences`) and per-resource routing. Events: attack, FlowSpec, blackhole, escalation, approval needed, policy denial of a detector request, BGP session down, propagation not seen.
+- **Alerts** through the shared [llcforge-beacon](crates/llcforge-beacon) kit: Telegram, webhook with HMAC signature, Slack, Discord, Teams, e-mail, PagerDuty, Opsgenie, syslog and stdout, with a crash-safe queue, dedup, silences (`event-horizon silence add|list|remove`, `/v1/silences`) and per-resource routing. Events: attack, FlowSpec, blackhole, escalation, approval needed, policy denial of a detector request, BGP session down, propagation not seen.
 - **Audit log** of every decision and UPDATE as JSON lines; **Prometheus** `/metrics`, `/healthz`, `/readyz`; JSON or text logs; configuration reload (SIGHUP, file change, `POST /v1/reload`); `event-horizon service install|uninstall|run`.
 - **`simulate`** prints the policy decision and the exact UPDATE bytes for a blackhole (optionally with a regional scope) or a FlowSpec rule, without network access.
 

@@ -1,4 +1,4 @@
-# llcforge-alert
+# llcforge-beacon
 
 Shared alerting and operations plumbing for the LLCForge network tools
 (Pathology, Event-Horizon, Catchment, Notary, Herald, Vigil): one alert schema,
@@ -21,7 +21,7 @@ integration on Windows, macOS and Linux.
 | `reload` | `ReloadSignal`: SIGHUP (Unix), config file change (all OSes), `POST /v1/reload` |
 | `logging` | `init_logging(text/json, level, filter)` |
 | `service` | Windows service run/install/uninstall; systemd/launchd hints on Unix |
-| `metrics` | Prometheus counters (`llcforge_alert_*`) |
+| `metrics` | Prometheus counters (`llcforge_beacon_*`) |
 
 ## Use in a tool
 
@@ -29,11 +29,11 @@ Each tool vendors the crate with `sync.py` and depends on it by path:
 
 ```toml
 [dependencies]
-llcforge-alert = { path = "crates/llcforge-alert" }
+llcforge-beacon = { path = "crates/llcforge-beacon" }
 ```
 
 ```rust
-use llcforge_alert::{Alert, Dispatcher, DispatcherOptions, Severity};
+use llcforge_beacon::{Alert, Dispatcher, DispatcherOptions, Severity};
 
 let dispatcher = Dispatcher::start(&cfg.alerts, DispatcherOptions {
     tool: "vigil".into(),
@@ -163,7 +163,7 @@ not retried. HTTP clients never follow redirects.
 
 The signature is `HMAC-SHA256(secret, "<timestamp>.<raw body>")`, hex encoded.
 Reject requests whose timestamp is more than five minutes away from your clock.
-In Rust: `llcforge_alert::sink::webhook::verify_signature(secret, ts, body, header, now, 300)`.
+In Rust: `llcforge_beacon::sink::webhook::verify_signature(secret, ts, body, header, now, 300)`.
 In Python:
 
 ```python
@@ -220,10 +220,10 @@ vigil silence remove <id>
 ## Metrics
 
 `Metrics::render_prometheus(&mut String)` appends:
-`llcforge_alert_{received,deduplicated,silenced,dropped,invalid}_total{tool}`,
-`llcforge_alert_queue_depth{tool}`,
-`llcforge_alert_sink_{sent,failed,suppressed,retries,rate_limited}_total{tool,sink,type}`,
-`llcforge_alert_sink_queued{tool,sink,type}`.
+`llcforge_beacon_{received,deduplicated,silenced,dropped,invalid}_total{tool}`,
+`llcforge_beacon_queue_depth{tool}`,
+`llcforge_beacon_sink_{sent,failed,suppressed,retries,rate_limited}_total{tool,sink,type}`,
+`llcforge_beacon_sink_queued{tool,sink,type}`.
 
 ## Packaging templates and sync
 

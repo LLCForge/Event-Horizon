@@ -1,4 +1,4 @@
-# llcforge-alert
+# llcforge-beacon
 
 LLCForge ağ araçları (Pathology, Event-Horizon, Catchment, Notary, Herald,
 Vigil) için ortak uyarı ve işletim altyapısı: tek bir uyarı şeması, on teslim
@@ -21,7 +21,7 @@ Windows, macOS ile Linux üzerinde servis entegrasyonu.
 | `reload` | `ReloadSignal`: SIGHUP (Unix), yapılandırma dosyası değişikliği (tüm işletim sistemleri), `POST /v1/reload` |
 | `logging` | `init_logging(text/json, seviye, filtre)` |
 | `service` | Windows servisi çalıştırma/kurma/kaldırma; Unix'te systemd/launchd yönergeleri |
-| `metrics` | Prometheus sayaçları (`llcforge_alert_*`) |
+| `metrics` | Prometheus sayaçları (`llcforge_beacon_*`) |
 
 ## Bir araçta kullanım
 
@@ -29,11 +29,11 @@ Her araç crate'i `sync.py` ile kendi deposuna kopyalar ve yol bağımlılığı
 
 ```toml
 [dependencies]
-llcforge-alert = { path = "crates/llcforge-alert" }
+llcforge-beacon = { path = "crates/llcforge-beacon" }
 ```
 
 ```rust
-use llcforge_alert::{Alert, Dispatcher, DispatcherOptions, Severity};
+use llcforge_beacon::{Alert, Dispatcher, DispatcherOptions, Severity};
 
 let dispatcher = Dispatcher::start(&cfg.alerts, DispatcherOptions {
     tool: "vigil".into(),
@@ -171,10 +171,10 @@ vigil silence remove <id>
 ## Metrikler
 
 `Metrics::render_prometheus(&mut String)` şunları ekler:
-`llcforge_alert_{received,deduplicated,silenced,dropped,invalid}_total{tool}`,
-`llcforge_alert_queue_depth{tool}`,
-`llcforge_alert_sink_{sent,failed,suppressed,retries,rate_limited}_total{tool,sink,type}`,
-`llcforge_alert_sink_queued{tool,sink,type}`.
+`llcforge_beacon_{received,deduplicated,silenced,dropped,invalid}_total{tool}`,
+`llcforge_beacon_queue_depth{tool}`,
+`llcforge_beacon_sink_{sent,failed,suppressed,retries,rate_limited}_total{tool,sink,type}`,
+`llcforge_beacon_sink_queued{tool,sink,type}`.
 
 ## Paketleme şablonları ve senkronizasyon
 

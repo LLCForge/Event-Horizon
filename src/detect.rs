@@ -17,7 +17,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use ipnet::IpNet;
-use llcforge_alert::Severity;
+use llcforge_beacon::Severity;
 use tokio::net::UdpSocket;
 use tokio::sync::watch;
 use tracing::{debug, info, warn};

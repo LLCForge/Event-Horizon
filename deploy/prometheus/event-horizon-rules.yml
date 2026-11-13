@@ -1,4 +1,4 @@
-# Prometheus alerting rules for Event Horizon (generic llcforge-alert metrics).
+# Prometheus alerting rules for Event Horizon (generic llcforge-beacon metrics).
 # Load with `rule_files: ["event-horizon-rules.yml"]` or as a PrometheusRule `spec`.
 # Assumes the scrape job is named "event-horizon"; adjust the `job` matcher if not.
 groups:
@@ -24,7 +24,7 @@ groups:
   - name: event-horizon.alert-delivery
     rules:
       - alert: EventHorizonAlertDeliveryFailing
-        expr: increase(llcforge_alert_sink_failed_total{tool="event-horizon"}[15m]) > 0
+        expr: increase(llcforge_beacon_sink_failed_total{tool="event-horizon"}[15m]) > 0
         for: 5m
         labels:
           severity: warning
@@ -33,7 +33,7 @@ groups:
           description: "{{ $value | humanize }} delivery failures in 15 minutes. Undelivered alerts stay queued and are retried."
 
       - alert: EventHorizonAlertsDropped
-        expr: increase(llcforge_alert_dropped_total{tool="event-horizon"}[15m]) > 0
+        expr: increase(llcforge_beacon_dropped_total{tool="event-horizon"}[15m]) > 0
         labels:
           severity: critical
         annotations:
@@ -41,7 +41,7 @@ groups:
           description: "Alerts were dropped (intake channel full, queue bound reached or delivery expired)."
 
       - alert: EventHorizonAlertQueueBacklog
-        expr: llcforge_alert_queue_depth{tool="event-horizon"} > 100
+        expr: llcforge_beacon_queue_depth{tool="event-horizon"} > 100
         for: 15m
         labels:
           severity: warning
@@ -50,7 +50,7 @@ groups:
           description: "Alerts are accumulating faster than sinks accept them, or a sink has been down for 15 minutes."
 
       - alert: EventHorizonSinkBacklog
-        expr: llcforge_alert_sink_queued{tool="event-horizon"} > 50
+        expr: llcforge_beacon_sink_queued{tool="event-horizon"} > 50
         for: 30m
         labels:
           severity: warning

@@ -28,8 +28,8 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
-use llcforge_alert::cli::{run_silence_command, ServiceCommand, SilenceCommand};
-use llcforge_alert::{
+use llcforge_beacon::cli::{run_silence_command, ServiceCommand, SilenceCommand};
+use llcforge_beacon::{
     health_router, init_logging, reload_router, run_service_command, silences_router, ApiToken,
     Dispatcher, DispatcherOptions, LogFormat, Readiness, ReloadSignal, ServiceSpec, Severity,
     Shutdown, SilenceStore,
@@ -128,7 +128,7 @@ fn main() -> ExitCode {
     let res = match cli.command {
         Command::Run => {
             init_logging_from(&cli.config);
-            llcforge_alert::service::run_foreground(cli.config, daemon).map(|_| ExitCode::SUCCESS)
+            llcforge_beacon::service::run_foreground(cli.config, daemon).map(|_| ExitCode::SUCCESS)
         }
         Command::Service { cmd } => {
             init_logging_from(&cli.config);
@@ -549,7 +549,7 @@ fn socket_options(cfg: &Config) -> Result<Vec<SocketOptions>> {
                         return Err(anyhow::Error::new(bgp_socket::md5_unsupported_error())
                             .context(format!("upstream {}", u.name)));
                     }
-                    let k = llcforge_alert::env_secret(var)
+                    let k = llcforge_beacon::env_secret(var)
                         .with_context(|| format!("upstream {}: TCP-MD5 password", u.name))?;
                     if k.len() > bgp_socket::MD5_MAX_KEY {
                         bail!(
@@ -592,7 +592,7 @@ async fn run(mut cfg: Config, config_path: PathBuf, mut shutdown: Shutdown) -> R
         Some(a) if a.mode != ApprovalMode::Off => match &a.telegram {
             Some(t) => Some((
                 t.clone(),
-                llcforge_alert::env_secret(&t.bot_token_env)
+                llcforge_beacon::env_secret(&t.bot_token_env)
                     .context("approval.telegram.bot_token_env")?,
             )),
             None => None,
@@ -797,7 +797,7 @@ async fn run(mut cfg: Config, config_path: PathBuf, mut shutdown: Shutdown) -> R
     if let Some(addr) = cfg.health.listen.filter(|a| Some(*a) != metrics_addr) {
         let mut sd = sd_rx.clone();
         tasks.spawn(async move {
-            if let Err(e) = llcforge_alert::serve(addr, admin, async move {
+            if let Err(e) = llcforge_beacon::serve(addr, admin, async move {
                 let _ = sd.changed().await;
             })
             .await

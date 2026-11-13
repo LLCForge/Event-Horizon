@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/LLCForge/llcforge-alert/schema/alert.v1.json",
+  "$id": "https://github.com/LLCForge/Beacon/schema/alert.v1.json",
   "title": "LLCForge alert v1",
   "description": "Tool-neutral alert emitted by every LLCForge tool (webhook body, stdout JSON, queue records).",
   "type": "object",

@@ -143,37 +143,37 @@ impl Metrics {
         let tool = label(&self.tool);
         let global: [(&str, &str, &str, u64); 6] = [
             (
-                "llcforge_alert_received_total",
+                "llcforge_beacon_received_total",
                 "counter",
                 "Alerts submitted to the dispatcher.",
                 s.received,
             ),
             (
-                "llcforge_alert_deduplicated_total",
+                "llcforge_beacon_deduplicated_total",
                 "counter",
                 "Alerts suppressed as duplicates.",
                 s.deduplicated,
             ),
             (
-                "llcforge_alert_silenced_total",
+                "llcforge_beacon_silenced_total",
                 "counter",
                 "Alerts suppressed by a silence.",
                 s.silenced,
             ),
             (
-                "llcforge_alert_dropped_total",
+                "llcforge_beacon_dropped_total",
                 "counter",
                 "Alerts dropped (channel full, queue bound, expiry).",
                 s.dropped,
             ),
             (
-                "llcforge_alert_invalid_total",
+                "llcforge_beacon_invalid_total",
                 "counter",
                 "Alerts rejected as invalid.",
                 s.invalid,
             ),
             (
-                "llcforge_alert_queue_depth",
+                "llcforge_beacon_queue_depth",
                 "gauge",
                 "Alerts awaiting delivery to at least one sink.",
                 s.queue_depth,
@@ -188,37 +188,37 @@ impl Metrics {
         type Get = fn(&SinkSnapshot) -> u64;
         let per_sink: [(&str, &str, &str, Get); 6] = [
             (
-                "llcforge_alert_sink_sent_total",
+                "llcforge_beacon_sink_sent_total",
                 "counter",
                 "Alerts delivered by sink.",
                 |x| x.sent,
             ),
             (
-                "llcforge_alert_sink_failed_total",
+                "llcforge_beacon_sink_failed_total",
                 "counter",
                 "Delivery failures by sink (after retries).",
                 |x| x.failed,
             ),
             (
-                "llcforge_alert_sink_suppressed_total",
+                "llcforge_beacon_sink_suppressed_total",
                 "counter",
                 "Alerts not routed to the sink by its filter.",
                 |x| x.suppressed,
             ),
             (
-                "llcforge_alert_sink_queued",
+                "llcforge_beacon_sink_queued",
                 "gauge",
                 "Alerts pending delivery to the sink.",
                 |x| x.queued,
             ),
             (
-                "llcforge_alert_sink_retries_total",
+                "llcforge_beacon_sink_retries_total",
                 "counter",
                 "Delivery retries by sink.",
                 |x| x.retries,
             ),
             (
-                "llcforge_alert_sink_rate_limited_total",
+                "llcforge_beacon_sink_rate_limited_total",
                 "counter",
                 "Times delivery waited for the rate limiter.",
                 |x| x.rate_limited,
@@ -259,10 +259,10 @@ mod tests {
         m.inc_received();
         let mut out = String::new();
         m.render_prometheus(&mut out);
-        assert!(out.contains("llcforge_alert_received_total{tool=\"vigil\"} 1"));
+        assert!(out.contains("llcforge_beacon_received_total{tool=\"vigil\"} 1"));
         assert!(out.contains(
-            "llcforge_alert_sink_sent_total{tool=\"vigil\",sink=\"noc\",type=\"telegram\"} 2"
+            "llcforge_beacon_sink_sent_total{tool=\"vigil\",sink=\"noc\",type=\"telegram\"} 2"
         ));
-        assert!(out.contains("# TYPE llcforge_alert_queue_depth gauge"));
+        assert!(out.contains("# TYPE llcforge_beacon_queue_depth gauge"));
     }
 }

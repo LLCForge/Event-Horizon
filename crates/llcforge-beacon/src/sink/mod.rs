@@ -106,7 +106,7 @@ pub(crate) fn capped_retry_after(secs: f64) -> Option<Duration> {
 /// and bearer tokens to an unexpected host), rustls, bounded connect time.
 pub fn http_client() -> Result<reqwest::Client, ConfigError> {
     reqwest::Client::builder()
-        .user_agent(concat!("llcforge-alert/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("llcforge-beacon/", env!("CARGO_PKG_VERSION")))
         .redirect(reqwest::redirect::Policy::none())
         .connect_timeout(Duration::from_secs(10))
         .build()

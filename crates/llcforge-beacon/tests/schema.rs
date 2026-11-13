@@ -5,7 +5,7 @@
 //! minLength, maxLength, maxItems, pattern "^https?://", format date-time),
 //! so the test needs no extra dependencies.
 
-use llcforge_alert::{Alert, Severity};
+use llcforge_beacon::{Alert, Severity};
 use serde_json::Value;
 
 fn schema() -> Value {

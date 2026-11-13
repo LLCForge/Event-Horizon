@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{bail, Context, Result};
 use ipnet::IpNet;
-use llcforge_alert::{AlertsConfig, HealthConfig, LogFormat, SilencesConfig};
+use llcforge_beacon::{AlertsConfig, HealthConfig, LogFormat, SilencesConfig};
 use serde::Deserialize;
 
 use crate::bgp::message::{Community, AS_TRANS};
@@ -549,7 +549,7 @@ impl Config {
     pub fn data_dir(&self) -> PathBuf {
         self.data_dir
             .clone()
-            .unwrap_or_else(|| llcforge_alert::default_data_dir(BIN))
+            .unwrap_or_else(|| llcforge_beacon::default_data_dir(BIN))
     }
 
     pub fn state_path(&self) -> PathBuf {

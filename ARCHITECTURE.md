@@ -38,7 +38,7 @@ flowchart LR
   S2 -- /32 + communities --> U2[Upstream B]
   A --> PR[Propagation checker] -- HTTPS --> RS[RIPEstat looking-glass]
   PR -- HTTP --> PA[Pathology API]
-  E --> AL[llcforge-alert dispatcher] --> SK[Telegram, webhook, Slack, ... sinks]
+  E --> AL[llcforge-beacon dispatcher] --> SK[Telegram, webhook, Slack, ... sinks]
   D --> R[(Attack reports JSON + Markdown)]
 ```
 
@@ -63,12 +63,12 @@ flowchart LR
 | `src/bgp/session.rs` | One announce-only eBGP session per upstream: OPEN validation, timers, per-upstream desired set (scope, FlowSpec negotiation), diff-based announce / withdraw, EoR, reconnect with exponential backoff, Cease or graceful close. Dry-run logger. |
 | `src/propagation.rs` | RIPEstat looking-glass and Pathology clients (time-boxed, size-limited, no redirects), status combination, periodic checker. |
 | `src/approval.rs` | Telegram bot: posts pending requests with inline buttons, long-polls `getUpdates`, validates chat and user, calls `approve` / `reject`. |
-| `src/api.rs` | axum router for blackholes, FlowSpec, approvals and reports; rate limit, constant-time bearer token, body limit, strict schemas; `/metrics` router including the llcforge-alert counters. |
+| `src/api.rs` | axum router for blackholes, FlowSpec, approvals and reports; rate limit, constant-time bearer token, body limit, strict schemas; `/metrics` router including the llcforge-beacon counters. |
 | `src/tls.rs` | rustls server configuration (TLS 1.3 / 1.2, optional client CA for mTLS) and the bounded accept loop with handshake and header timeouts. |
-| `src/alerts.rs` | Swappable llcforge-alert handle shared by all tasks (replaced on reload). |
+| `src/alerts.rs` | Swappable llcforge-beacon handle shared by all tasks (replaced on reload). |
 | `src/metrics.rs` | Atomic counters and gauges rendered in Prometheus text format. |
 | `src/wire.rs` | Bounds-checked big-endian reader shared by the parsers. |
-| `crates/llcforge-alert` | Vendored shared kit: alert schema, sinks, persistent queue, silences, health, reload, logging, service integration. |
+| `crates/llcforge-beacon` | Vendored shared kit: alert schema, sinks, persistent queue, silences, health, reload, logging, service integration. |
 
 Unit tests live next to the code. They include truncation sweeps over every parser, exact-byte UPDATE and NLRI vectors, the policy matrix for blackholes, FlowSpec and scopes, approval flows (pending, re-check after policy change, deny, timeout, cancel), the escalation path against the real engine, an end-to-end BGP test against a fake peer on loopback (handshake, announce, regional communities, withdraw, garbage UPDATE, reconnect + re-announce, Cease), a FlowSpec + Graceful Restart session test (SAFI 133 UPDATEs, End-of-RIB, close without NOTIFICATION), HTTPS and mTLS against generated certificates, and fake Telegram / RIPEstat / Pathology servers.
 
@@ -101,7 +101,7 @@ Unit tests live next to the code. They include truncation sweeps over every pars
 
 ## Runtime model
 
-- Tokio multi-threaded runtime started by the llcforge-alert service wrapper (foreground, Windows service, systemd, launchd). Tasks: one per upstream session (plus a reader per connection), sFlow and NetFlow collectors, the detector tick (1 s), the expiry / readiness tick (1 s), the trigger API (plain or TLS), the management listener (`/metrics`, `/healthz`, `/readyz`, `/v1/silences`, `/v1/reload`), the propagation checker, the Telegram bot and the alert dispatcher.
+- Tokio multi-threaded runtime started by the llcforge-beacon service wrapper (foreground, Windows service, systemd, launchd). Tasks: one per upstream session (plus a reader per connection), sFlow and NetFlow collectors, the detector tick (1 s), the expiry / readiness tick (1 s), the trigger API (plain or TLS), the management listener (`/metrics`, `/healthz`, `/readyz`, `/v1/silences`, `/v1/reload`), the propagation checker, the Telegram bot and the alert dispatcher.
 - The engine and the detector sit behind `std::sync::Mutex`es; critical sections are short and never cross an `.await`. Sessions observe the published set through a `watch` channel and compute diffs, so no update can be lost to a full queue.
 - Graceful shutdown: a shutdown `watch` stops all tasks; the process waits up to 5 s for them, then drains the alert dispatcher.
 
@@ -111,7 +111,7 @@ Unit tests live next to the code. They include truncation sweeps over every pars
 Event-Horizon/
 ├── .github/workflows/      CI (fmt, clippy, tests on Linux, macOS, Windows; audit, deny, SBOM) and release
 ├── assets/                 logos, icons and README images
-├── crates/llcforge-alert/  vendored shared alerting / operations kit (synced, do not edit here)
+├── crates/llcforge-beacon/  vendored shared alerting / operations kit (synced, do not edit here)
 ├── deploy/                 Grafana dashboard, Prometheus rules, Helm chart
 ├── packaging/              systemd, launchd, Windows service, Homebrew, Scoop, winget, deb/rpm fragment
 ├── src/                    application source (see table above)

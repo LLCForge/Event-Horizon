@@ -12,7 +12,7 @@ keywords = ["bgp", "rtbh", "ddos", "flowspec", "networking"]
 categories = ["network-programming", "command-line-utilities"]
 
 [workspace]
-members = [".", "crates/llcforge-alert"]
+members = [".", "crates/llcforge-beacon"]
 
 [dependencies]
 anyhow = "1"
@@ -22,7 +22,7 @@ clap = { version = "4", features = ["derive"] }
 hyper = { version = "1", features = ["http1", "server"] }
 hyper-util = { version = "0.1", features = ["tokio", "server", "service"] }
 ipnet = { version = "2", features = ["serde"] }
-llcforge-alert = { path = "crates/llcforge-alert", version = "0.1" }
+llcforge-beacon = { path = "crates/llcforge-beacon", version = "0.1" }
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
 ring = "0.17"
 rustls = { version = "0.23", default-features = false, features = ["std", "ring", "tls12", "logging"] }
